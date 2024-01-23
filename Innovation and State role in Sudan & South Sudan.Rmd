@@ -1,0 +1,552 @@
+---
+title: "Innovation and State role in Sudan & South Sudan"
+author: "Lucas LATEB, Olivia MU, Leode GBESSOMON"
+date: "17/12/2023"
+output: rmdformats::"readthedown"
+
+---
+
+```{r,echo=FALSE,include=FALSE}
+# Packages 
+rm(list=ls())
+library(haven)
+library(jtools)
+library(foreign)
+library(dplyr)
+library(car)
+library(ggplot2)
+library(corrplot)
+```
+
+
+# Introduction and literature review 
+
+**Introduction**
+
+The current period is marked by an increased role of knowledge in all its forms in the functioning of economies. Countries that manage to organize, manage, and exploit their knowledge capital effectively are the ones showing the best economic performances. This trend also seems to hold true for high-potential knowledge-based businesses and in offering the highest-paid jobs (OECD, 2000). This strategic role of knowledge explains the growth in investment in research and development, education and training, as well as intangible investment in the majority of countries.
+
+Moreover, developing countries that have, since the 1960s, focused their development on industrialization also seem to grasp the stakes and the necessity of establishing genuine economies that favor better technology transfer and promote the building of national innovation systems.
+
+Indeed, in these countries, there is a shift from static industrialization policies to dynamic, flexible, and competitive industrial policies based on science and technology (WEF, 2015).
+
+This is the case in most African countries. Aware of the wealth that this continent holds and the limited research on innovation in African economies, this contribution aims to analyze the innovation capacity of the Sudanese economy based on the following questions: What does a national innovation system entail? And what are its determinants within the framework of Sudanese enterprises?
+
+
+**Literature review **
+
+*What is innovation ?*
+From the early writings of Schumpeter (1912) on entrepreneurship to the present day, innovation has undergone various stages of theoretical development. Long considered the poor relative of economic science, innovation now enjoys a fairly comprehensive theoretical framework (Boub-olga, 2003).
+
+Research on innovation in African economies is not extensive. Few studies focus on the factors that explain the technological innovation behavior of businesses.
+
+In the early 1980s, the role of the State in technological innovation was revealed by Rothweld and Zegveld (1981, 1985), and then by Nelson (1982, 1984). Niosi and Faucher (1991) highlight in this regard that the State is the main provider of the most important factor of production: scientific and technological knowledge.
+According to the evolutionary school (Dosi 1988, Nelson and Winter 1982), the process of accumulating and creating new technologies depends on the path taken (path dependency). This path is nonlinear and shaped by the interaction of market and non-market organizations and various institutions (Metcalfe, 1995).
+
+Thus, innovation is seen as an interactive, cumulative, and localized process (at the sectoral level; local, national, or global level) where the institutional dimension plays a significant role.
+
+According to the neo-Schumpeterian theory, whose focal model was constructed by Nelson and Winter (1982),the main phenomena include the impact of firm size and technological opportunities (Mansfield, 1995), types of technological learning and innovation sources (Pavitt, 1984), appropriation conditions, and the complex effects of market structures (Scherer, 1991). Although the innovation determination process is complex and multidimensional, the core of the theoretical framework is occupied by the R&D/Innovation equation. R&D expenditures are considered a strong determinant of innovation, in line with the theoretical frameworks advocated by Nelson and Winter (1982).
+
+
+# Research hypotheses
+
+  The role of the state is crucial in the emergence and development of innovation capacities within companies. In this section, we present our central hypothesis, which posits that the involvement of the state in Sudan and South Sudan plays a crucial role in the propensity of companies to innovate. This hypothesis is based on several intuitions that are supported by the existing literature, but very little in Africa. According to economic theory, the state can play a crucial facilitating role in the development of innovative companies. Previous work suggests that the presence and active engagement of the state can create an environment conducive to innovation, thereby fostering the growth of innovation capacities within companies.
+
+Our hypothesis proposes that firms benefiting from non-financial support from the state (i.e., training in the use of innovative equipment, assistance in product research and development, etc.) demonstrate a higher level of innovation than those without such support, even in the absence of substantial financial backing. This proposition is based on the belief that the state, by offering non-financial support, can positively influence the internal innovation processes within companies. Furthermore, the hypothesis explores the synergy between innovation and governmental cooperation. It suggests that collaboration between companies with an inclination to innovate and government institutions promotes the development and successful implementation of innovative practices. Finally, the hypothesis examines innovation in the face of criminal risks. It suggests that exposure to criminal acts prompts companies to adopt innovative strategies, thus highlighting that challenges related to crime can act as one of the catalysts for innovation in the countries studied.
+
+  Thus, these findings will serve as the basis for our in-depth analysis by examining elements of the existing literature and assessing the robustness of these ideas in the specific context of Sudan and South Sudan. Our goal is therefore to understand the relationship between state involvement and the innovation process within companies operating in these areas.
+
+
+
+# Data presentation and visualization
+
+## Brief presentation of the used data
+
+  The data we used comes from a survey conducted by the World Bank among companies in Sudan and South Sudan between 2013 and 2014. This initiative aimed to gather detailed information about the economic and entrepreneurial landscape of these countries, in order to inform the understanding of local economic realities and guide potential public policies and development programs. Our study specifically focuses on Sudan and South Sudan, with a dataset comprising responses from a total of 1400 companies. Each column in our dataset represents a specific question from the questionnaire administered during this survey, with a sample including 738 companies in South Sudan and 662 companies in Sudan. With this database, we will attempt to estimate a model to test the validity of our hypothesis.
+
+
+```{r,echo=FALSE,include=FALSE}
+# LECTURE DES DONNEES 
+ssudanFull = read_dta("C:/Users/lucas.lateb/Desktop/Projet/BDD/BDD/SouthSudan2014/SouthSudan-2014-full-data.dta")
+
+ssudanInnov = read_dta("C:/Users/lucas.lateb/Desktop/Projet/BDD/BDD/SouthSudan2014/SouthSudan2014-Innovation-data.dta")
+
+sudanFull = read_dta("C:/Users/lucas.lateb/Desktop/Projet/BDD/BDD/Sudan2014/Sudan-2014-full-data.dta")
+sudanInnov = read_dta("C:/Users/lucas.lateb/Desktop/Projet/BDD/BDD/Sudan2014/Sudan2014-Innovation-data.dta")
+
+# Fusion des données
+# Fusion sudan 
+sudan = full_join(sudanFull, sudanInnov, by = "idstd")
+# Fusion ssudan
+ssudan = full_join(ssudanFull, ssudanInnov, by = "idstd")
+```
+
+
+```{r,echo=FALSE,include=FALSE}
+# SELECTION DES VARIABLES
+# soudan
+df1 = subset(sudan, select = c(hb1, hc1, a6a.x,a6b.x, ha0, ha15y, n3,hf1a, hf2a,hf5a, hf7a, hf7b, hf7c, hf7d, hf7e, hf8,j6a, hf10a, hf10b, hf10c, hf10d, hf10e, hf10f,i3,i30, i1))
+
+
+# south of soudan
+df2 = subset(ssudan, select = c(hb1, hc1, a6a.x,a6b.x, ha0, ha15y, n3,hf1a, hf2a, hf5a, hf7a, hf7b, hf7c, hf7d, hf7e, hf8,j6a, hf10a, hf10b, hf10c, hf10d, hf10e, hf10f,i3,i30, i1))
+
+# créer une variable pays pour dire 1 = soudan et 0 sinon
+df1$pays = rep(1, nrow(df1))
+df2$pays = rep(0, nrow(df2))
+  
+# Fusion des deux bases de données
+data = rbind(df1, df2) # 1400 observations
+```
+
+
+```{r,echo=FALSE,include=FALSE}
+# LISTE DES VARIABLES à modifier pour les 'don't know' en na
+variables_to_replace <- c("hb1", "hc1", "n3", "hf1a", "hf2a", "hf5a","hf7a", "hf7b", "hf7c", "hf7d", "hf7e", "hf8", "j6a", "hf10a", "hf10b", "hf10c", "hf10d", "hf10e", "hf10f", "i1","i3")
+
+# Remplacer -9 par NA pour les variables spécifiées
+for (var in variables_to_replace) {
+    data[[var]] <- replace(data[[var]], data[[var]] == -9, NA)
+}
+
+# Remplacer -7 par NA pour la variable n3
+data$n3 <- replace(data$n3, data$n3 == -7, NA)
+```
+
+
+```{r,echo=FALSE,include=FALSE}
+# Recodage des modalités 2/0 pour les différents financements
+var2 <- c( "hf1a", "hf2a", "hf5a","hf7a", "hf7b", "hf7c", "hf7d", "hf7e", "hf8", "j6a", "hf10a", "hf10b", "hf10c", "hf10d", "hf10e", "hf10f", "i1","i3")
+
+# Remplacer -9 par NA pour les variables spécifiées
+for (var in var2) {
+    data[[var]] <- replace(data[[var]], data[[var]] == 2, 0)
+}
+```
+
+
+```{r,echo=FALSE,include=FALSE}
+# RECODAGE DE Y pour modèle de baseline
+# Combinaison de l'innovation de produit et l'innovation de procédé
+# Combinaison de l'innovation de produit et l'innovation de procédé
+n = length(data$hb1)
+
+# Création des variables innov_pdt et innov_proc
+for(i in 1:n) {
+  data$innov_pdt[i] <- ifelse(is.na(data$hb1[i]), NA, ifelse(data$hb1[i] == 1, 1, 0))
+  data$innov_proc[i] <- ifelse(is.na(data$hc1[i]), NA, ifelse(data$hc1[i] == 1, 1, 0))
+}
+
+# Création de la variable innov
+for(i in 1:n) {
+  sum_innov <- data$innov_pdt[i] + data$innov_proc[i]
+  if (is.na(sum_innov)) {
+    data$innov[i] <- NA
+  } else {
+    data$innov[i] <- ifelse(sum_innov > 0, 1, 0)
+  }
+}
+```
+
+```{r,echo=FALSE,include=FALSE}
+# RECODAGE DU RISQUE (si on l'utilise)
+n = length(data$i30)
+
+for(i in 1:n) {
+  if (data$i30[i] == 0) {
+    data$degree_crime[i] = 0
+  } else if (data$i30[i] %in% c(1, 2)) {
+    data$degree_crime[i] = 1
+  } else if (data$i30[i] %in% c(4, 5)) {
+    data$degree_crime[i] = 2
+  }
+}
+```
+
+
+```{r,echo=FALSE,include=FALSE}
+# Compter le nombre de NA par variables
+na_count <- colSums(is.na(data))
+
+# Afficher le rÃ©sultat
+print(na_count)
+```
+
+
+```{r,echo=FALSE,include=FALSE}
+# Renommer les variables 
+colnames(data) = c("hb1", "hc1", "samp_size", "screener_size","sect","year","sales","intRD", "extRD","ext_fin","ownfunds","bankfunds", "gvtfunds","ngofunds","otherfunds","nonfin_gvt","gouv_contr","coopDomfirm", "coopForfirm","coopDomAcad","coopForAcad", "coopPriv","coopGvt","crime","i30", "risk_fin","pays","innov_pdt", "innov_proc", "innov","degre_crime")
+```
+
+
+
+## Description of the data
+
+In our comprehensive dataset, we explore several key binary variables that offer insights into the innovation landscape of enterprises. These variables include:
+
+**Pays (Sudan or South Sudan)**: This variable distinguishes between establishments located in Sudan and South Sudan, providing a geographical context to our analysis. 
+
+**Internal R&D (intRD)**: This crucial variable indicates whether an establishment conducts internal research and development. It is a significant indicator of a firm's commitment to innovation. 
+
+
+```{r,echo=FALSE}
+# Calcul des proportions pour la R&D interne
+proportions_intRD <- table(data$intRD) / nrow(data) * 100
+
+# Transformation en dataframe pour ggplot
+df_intRD <- as.data.frame(proportions_intRD)
+df_intRD$intRD <- rownames(df_intRD)
+
+# Renommer les colonnes pour plus de clart?
+colnames(df_intRD) <- c("Proportion", "Internal R&D")
+
+# Création du graphique à barres
+ggplot(df_intRD, aes(x = `Internal R&D`, y = Proportion, fill = `Internal R&D`)) + 
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Proportion of Firms Engaging in Internal R&D",
+       x = "Internal R&D Status", 
+       y = "Proportion (%)")
+```
+
+This chart shows the proportion of firms engaging in internal R&D. The overwhelming majority of firms are not engaging in internal R&D, indicated by the large blue bar, suggesting internal innovation activities may be limited within this dataset.
+
+**External R&D (extRD)**: Reflecting on external innovation strategies, this variable shows whether establishments are involved in external research and development activities.
+
+```{r,echo=FALSE}
+table_pays_extRD <- table(data$pays, data$extRD)
+barplot(table_pays_extRD, main="R&D Externe par Pays", xlab="Pays", ylab="Number of establishment", beside=TRUE, col=c("blue", "grey"), legend=rownames(table_pays_extRD))
+```
+
+This chart presents the number of firms engaged in external R&D activities. The purple and yellow bars could indicate the count of firms not engaging in external R&D (purple) against those that do (yellow). The contrast is stark, with a significantly higher number of firms not engaged in external R&D in both countries.
+
+**External financing (ext_fin)** captures whether firms purchase or license patents, inventions, or other knowledge types for innovative development.
+
+```{r,echo=FALSE}
+# Calcul des proportions pour l'acquisition de connaissances externes
+proportions_ext_fin <- table(data$ext_fin) / nrow(data) * 100
+
+# Transformation en dataframe pour ggplot
+df_ext_fin <- as.data.frame(proportions_ext_fin)
+df_ext_fin$ext_fin <- rownames(df_ext_fin)
+
+# Renommer les colonnes pour plus de clart?
+colnames(df_ext_fin) <- c("Proportion", "External Knowledge Acquisition")
+
+# Création du graphique à barres
+ggplot(df_ext_fin, aes(x = `External Knowledge Acquisition`, y = Proportion, fill = `External Knowledge Acquisition`)) + 
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Proportion of firms investing in external knowledge Acquisition",
+       x = "Investment in External Knowledge", 
+       y = "Proportion (%)")
+```
+
+This final chart shows the proportion of firms investing in external knowledge acquisition. Similar to internal R&D, a significant majority are not investing in external knowledge, as indicated by the expansive blue bar.
+
+**Non-Financial Government Support (nonfin_gvt)**: Indicating government's non-financial backing for innovation, this variable can highlight the role of governmental support in the innovation ecosystem.
+
+**Government Contracts (gouv_contr)**: This variable shows whether establishments have contracts with the government, which can be a significant driver of innovation.
+
+
+```{r,echo=FALSE}
+table_gouvcontr_extRD <- table(data$pays, data$gouv_contr)
+barplot(table_gouvcontr_extRD, main="Government contracts by Country", xlab="Country", ylab="Number of establishments", beside=TRUE, col=c("blue", "grey"), legend=rownames(table_gouvcontr_extRD))
+```
+This chart demonstrates a comparison between the number of firms with government contracts (indicated by "1") and those without (indicated by "0") in two countries. The blue bars represent the absence of government contracts, and the red bars represent their presence. It appears that in both countries, the majority of firms do not have government contracts, with a notable number still engaging in such agreements.
+
+**Cooperation with Government (coopGvt)**: Representing a firm's collaborative efforts with the government, this variable is crucial to understanding public-private partnerships in innovation.
+
+**Crime**: This variable provides insight into the prevalence of crime as reported by establishments, which can impact the business environment and innovation.
+
+**risk_fin**: Whether a firm invests in security measures to protect against crime. This investment is a key indicator of a firm's approach to risk management, particularly in regions where crime may pose a significant threat to business operations. The presence of this variable allows us to examine the potential correlation between a firm's proactive stance on security and its capacity for innovation. By securing their operations, firms may be able to create a stable environment that is conducive to the pursuit of innovative activities. 
+
+**Innovation (innov)**: The target variable of our study, it represents the innovative output of the establishments
+```{r, echo=FALSE}
+# la variable expliquée : entrepris innovante ou pas
+# CrÃ©ation de la table de fréquence
+table_formal <- table(data$innov)
+# Tracer le graphique en secteurs
+pie(table_formal, 
+    col = c("grey", "blue"), 
+    main = "Proportion of Innovative Companies", 
+    radius = 1,
+    labels = round(100 * table_formal / sum(table_formal), 1))
+
+# Positionnement de la légende en dehors du graphique
+legend("topleft", 
+       c("No", "Yes"), 
+       fill = c("grey", "blue")
+)
+       
+
+```
+The pie chart divides firms into two segments: innovative (labeled "Oui") and non-innovative (labeled "Non"). Over half of the firms are labeled as innovative, suggesting a dynamic environment where a significant portion of firms are involved in innovative activities.
+
+Each of these variables plays a crucial role in shaping our understanding of the factors that drive or hinder innovation in enterprises. The accompanying visualizations will provide a clearer, more engaging representation of these dynamics.
+
+```{r,echo=FALSE,include=FALSE}
+data$pays_num <- as.numeric(as.factor(data$pays))
+data$intRD_num <- as.numeric(as.factor(data$intRD))
+data$extRD_num <- as.numeric(as.factor(data$extRD))
+data$ext_fin_num <- as.numeric(as.factor(data$ext_fin))
+data$nonfin_gvt_num <- as.numeric(as.factor(data$nonfin_gvt))
+data$gouv_contr_num <- as.numeric(as.factor(data$gouv_contr))
+data$coopGvt_num <- as.numeric(as.factor(data$coopGvt))
+data$crime_num <- as.numeric(as.factor(data$crime))
+data$innov_num <- as.numeric(as.factor(data$innov))
+
+# Sélection des variables numériques pour la corrélation
+donnees_corr <- data[, c("pays_num", "intRD_num", "extRD_num", "ext_fin_num", "nonfin_gvt_num", "gouv_contr_num", "coopGvt_num", "crime_num", "innov_num")]
+
+# Calcul de la matrice de corrélation
+matrice_corr <- cor(donnees_corr, use="complete.obs")
+
+# Affichage de la matrice de corrélation
+print(matrice_corr)
+```
+
+
+```{r,echo=FALSE}
+corrplot(matrice_corr, method="circle")
+```
+The matrix displays the correlation coefficients between various binary variables. Dark blue circles indicate a positive correlation, and the size corresponds to the strength of the correlation. The orange circles represent negative correlations. It seems there are several strong positive correlations, particularly between 'pays_num' and other variables, which could imply specific country-related trends.
+
+
+
+# Econometric analysis
+
+## Estimation procedure
+
+  To model and evaluate our hypothesis, we conducted a careful selection and recoding of variables for a better understanding of relevant information. This selection is divided into three categories: the exogenous variable, which is a company's propensity to innovate; the variables of interest, which directly respond to our research hypothesis; and finally, the control variables, crucial for capturing other effects that might influence the exogenous variable. This rigorous method allows us to isolate and analyze the specific impact of the state's role on innovation capacities within companies in these countries.
+
+  Our econometric study, focusing on Sudan and South Sudan, analyzes World Bank data to assess the determinants of corporate innovation. The variable 'innov' is at the heart of our model: it is defined categorically to indicate whether a company has introduced an innovation, either in its products, its processes, or both. This distinction is vital as it allows us to capture not only the presence of innovation but also its diversity within the studied companies.
+
+We distinguish company responses by country with the variable 'pays1', which differentiates Sudan from South Sudan. This distinction is crucial to evaluate the effect of the national context on innovation. The variable 'nonfin_gvt' tracks whether a company receives non-financial state support for innovation, including aids such as training, product research and development, and marketing support.$ This highlights the role of the state as a facilitator of innovation. Moreover, 'crime' examines if the perception of crime is a barrier to innovation, while 'gouv_contr' and 'coopGvt' assess whether the company has attempted or obtained government contracts and if it has cooperated with the government for innovative activities. The variable 'interaction1' is particularly instructive, as it captures the combined effect of cooperation with the state and non-financial support on innovation.
+
+Our control variables, such as 'intRD' and 'extRD,' provide information about the company's commitment to internal and external research and development, while 'ext_fin' and 'risk_fin' address whether companies have conducted external investments in technologies and security spending, factors that could influence innovation capacity.
+
+  To understand the effect of all these variables on innovation, we use a Generalized Linear Model (GLM) of binomial distribution with a logit link function. This model is particularly suitable for analyzing our dependent variable, 'innov', which identifies innovative companies. The logit link allows us to model the relationship between the explanatory variables and the binary probability of innovation, ensuring that our probability predictions remain within the bounds of 0 and 1. This econometric model is thus essential to evaluate how the interaction between state engagement and internal and external R&D activities, as well as other forms of investments, contribute to innovation within companies in these two countries.
+
+
+## RÃ©sultats
+
+```{r,echo=FALSE,include=FALSE}
+# CREATION OF INTERACTIONNAL VARIABLE
+data$interaction1 = data$coopGvt * data$nonfin_gvt
+# PUT VARIABLES AS FACTOR FOR THE REGRESSION
+data$pays = as.factor(data$pays)
+data$crime= as.factor(data$crime)
+data$innov=as.factor(data$innov)
+data$gouv_contr=as.factor(data$gouv_contr)
+```
+
+Below, you will find the initial regression model that serves to test the hypothesis.
+```{r,echo=FALSE}
+# BASE MODEL
+baseline = glm(innov ~ pays+ intRD+extRD+ext_fin+nonfin_gvt+ crime+ gouv_contr+coopGvt+risk_fin+interaction1,data = data, family=binomial(logit))
+s = summary(baseline)
+summ(baseline)
+```
+
+**pays1 (Sudan) (-1.97)**: The negative coefficient for Sudan (pays1) suggests that firms located in Sudan are substantially less likely to innovate compared to their counterparts in South Sudan (pays0), which serves as the reference category in this model.This result could be influenced by a variety of factors unique to the economic, social, and political environment in Sudan. It might reflect differences in the business climate, governmental support for innovation, infrastructure, or other conditions conducive to innovation between the two countries. The interpretation suggests that for firms in this dataset, being located in Sudan poses challenges or lacks certain advantages that are present in South Sudan, which in turn affects their innovation outcomes.
+
+**intRD (-0.16)**: Contrary to expectations, the negative coefficient for internal R&D suggests that engagement in internal R&D is associated with a decrease in the likelihood of innovation. This counterintuitive result might imply that, in this specific context, internal R&D efforts are not effectively translating into innovative outcomes.
+
+**extRD (1.87)**: This positive coefficient indicates that external R&D has a significant and positive impact on innovation. Firms engaging in external R&D are much more likely to innovate, highlighting the importance of external collaborations and partnerships in the innovation process.
+
+***ext_fin (0.60)**: The positive coefficient for external financing implies that firms that invest in external knowledge acquisition (like purchasing or licensing patents or inventions) have a higher likelihood of innovating. This underscores the value of external knowledge sources in driving innovation.
+
+**nonfin_gvt (-0.19)**: The negative coefficient for non-financial government support suggests a decrease in innovation likelihood associated with this factor. It might indicate that, in this dataset, non-financial government support, such as advisory services or regulatory benefits, is not effectively fostering innovation.
+
+**crime1 (-0.06)**: The negative coefficient for crime suggests an inverse relationship between crime levels and a firm's innovation propensity. This can be interpreted as indicating that the presence of crime may create an environment of uncertainty and risk, which could deter investment in innovative activities.
+
+**gouv_contr1 (0.51)**: The positive coefficient for having or attempting government contracts indicates that such contracts might encourage innovation. This could be due to the requirements and standards demanded by government contracts, which may push firms to develop new and improved products or processes.
+
+**coopGvt (0.73)**: The positive coefficient indicates that cooperation with government bodies is positively associated with innovation. This suggests that collaborative engagements with government entities can foster an environment conducive to innovation.
+
+**risk_fin (0.28)**: The positive coefficient suggests that firms investing in security against crime have a higher likelihood of innovating. This positive association implies that taking measures to secure their operations against crime, which is a form of risk management, can have a conducive impact on a firm's innovation activities. It may indicate that firms that are proactive in managing risk, such as crime-related risks, create a more stable and secure environment that is supportive of innovative endeavors. This investment in security could be seen as an integral aspect of creating a safe and predictable operational environment that enables firms to focus resources and efforts on innovation.
+
+**interaction1(0.70)**: The positive interaction coefficient suggests that when firms engage in both cooperation with the government (coopGvt) and receive non-financial government support (nonfin_gvt), there is an amplified positive effect on their propensity to innovate. In practical terms, this could mean that government cooperation, when complemented by non-financial support such as advisory services, training, regulatory benefits, or other non-monetary assistance, leads to a more fertile environment for innovation. This synergy could be due to the comprehensive support framework provided by the government, which not only facilitates direct cooperation but also enhances the firm's capacities and resources through non-financial means. This finding is particularly insightful for policy development and business strategy. It highlights the importance of a holistic approach where governmental support is not limited to financial assistance or formal contracts but extends to collaborative engagements and non-financial interventions that collectively create a more robust ecosystem for innovation.
+
+
+Each of these coefficients, when considered significant, provides insights into the various factors that can influence a firm's innovative behavior. They reflect a combination of internal capabilities, external influences, market conditions, and policy environment that collectively shape the innovation landscape within which firms operate.
+
+
+```{r,echo=FALSE, include=FALSE}
+# ODD RATIO
+odds_ratios = exp(coef(baseline))
+
+# Affichage des odds ratios
+print(odds_ratios)
+```
+
+Now, as we delve deeper into our analysis post-regression, let's turn our attention to odds ratios, a critical statistical measure that will help us gain further insights into the relationships and effects uncovered by our model
+
+|               | Odds Ratio |
+|---------------|------------|
+| Intercept     | 1.3261889  |
+| pays1         | 0.1388862  |
+| intRD         | 0.8480735  |
+| extRD         | 6.4753916  |
+| ext_fin       | 1.8306358  |
+| nonfin_gvt    | 0.8267287  |
+| crime1        | 0.9392031  |
+| gouv_contr1   | 1.6709402  |
+| coopGvt       | 2.0816389  |
+| risk_fin      | 1.3283604  |
+| interaction1  | 2.0136093  |
+
+
+
+For pays1, the odds ratio of 0.139 suggests that firms in this group (located in Sudan) are significantly less likely to innovate compared to the baseline category (likely South Sudan), with their odds of innovating being roughly 86% lower. This may reflect differing economic or policy environments between the two regions that impact innovation capabilities.
+The odds ratio for intRD at 0.848, indicates a slight, yet not substantial, decrease in the likelihood of innovation associated with internal R&D activities. This could point to a variety of factors, such as the efficiency of R&D processes or the nature of innovation within the firms.
+Conversely, extRD has an odds ratio of 6.475, which strongly indicates that external R&D is a significant driver of innovation, increasing the odds of being innovative by over 547%. This underscores the value of collaborative and external inputs into the innovation process.
+
+The variable ext_fin, with an odds ratio of 1.831, implies that external financing for knowledge acquisition enhances the likelihood of innovation, potentially reflecting the importance of external knowledge and technology in driving innovative outcomes.
+
+nonfin_gvt shows an odds ratio of 0.827, suggesting a slight decrease in innovation likelihood when firms receive non-financial government support. This might indicate that while such support is intended to promote innovation, it may not be the most effective form, at least not in isolation.
+
+Interestingly, crime1 has an odds ratio close to 1 (0.939), suggesting that the presence of crime has a minimal effect on innovation, which could indicate that firms are either resilient to such external factors or that other variables in the model are mitigating its impact.
+
+The gouv_contr1 variable shows an odds ratio of 1.671, suggesting that having government contracts is associated with a higher likelihood of innovation, potentially due to the stimulus or requirements that such contracts may impose on firms.
+
+coopGvt presents an odds ratio of 2.082, indicating that cooperative engagements with government significantly boost the odds of a firm being innovative, perhaps due to synergies and shared objectives in the innovation arena.
+
+risk_fin has an odds ratio of 1.328, which suggests that firms taking measures to mitigate risks, such as investing in security against crime, are slightly more likely to innovate. This could be due to a more secure operational environment enabling a focus on innovative activities.
+Lastly, the interaction term interaction1 has an odds ratio of 2.014, signaling that the interaction between government cooperation and non-financial support has a compounding positive effect on innovation, more than doubling the odds of innovative outcomes.
+
+## Robustness tests
+```{r,echo=FALSE,include=FALSE}
+# Perimètre d'innovation strice
+n = length(data$hb1)
+
+# Création des variables innov_pdt et innov_proc
+for(i in 1:n) {
+  data$innov_pdt[i] <- ifelse(is.na(data$hb1[i]), NA, ifelse(data$hb1[i] == 1, 1, 0))
+  data$innov_proc[i] <- ifelse(is.na(data$hc1[i]), NA, ifelse(data$hc1[i] == 1, 1, 0))
+}
+
+# Création de la variable innov
+for(i in 1:n) {
+  sum_innov1 <- data$innov_pdt[i] + data$innov_proc[i]
+  if (is.na(sum_innov1)) {
+    data$innov1[i] <- NA
+  } else {
+    data$innov1[i] <- ifelse(sum_innov1 == 2, 1, 0)
+  }
+}
+```
+
+
+To ensure the robustness of our base model and assess its capacity to be generalizable, we performed a robustness test by constructing three distinct regression models, using the same explanatory variables but with a modification of the endogenous variable. In these tests, 'innov1' is used as the endogenous variable, specifically targeting companies that have simultaneously introduced product and process innovations. This approach allows us to isolate the most innovative companies, those adopting a comprehensive and integrated innovation strategy. 
+
+| Model of robustness                 | Dependant variable | Independant ariables  | Other information          |
+|------------------------|----------------------|-------------------------|-----------------------------|
+| Base model             | innov1               | pays, intRD, extRD, ext_fin, nonfin_gvt, crime, gouv_contr, coopGvt, risk_fin, interaction1 | `Model1`           |
+| Sudan                 | innov1               | intRD, extRD, ext_fin, nonfin_gvt, crime, gouv_contr, coopGvt, risk_fin, interaction1 | `Model2`     |
+| South of Sudan         | innov1               | intRD, extRD, ext_fin, nonfin_gvt, crime, gouv_contr, coopGvt, risk_fin, interaction1 | `Model3` |
+
+```{r,echo=FALSE,include=FALSE}
+# BDD1 pour Soudan (pays = 1)
+bdd1 = data %>% filter(pays == 1)
+# BDD2 pour tout  Soudan du Sud (pays = 0)
+bdd2 = data %>% filter(pays == 0)
+data$innov1=as.factor(data$innov1)
+```
+
+```{r,echo=FALSE,include=FALSE}
+# AVEC INNOV PENETRE 
+model = glm(innov1 ~ pays+ intRD+extRD+ext_fin+nonfin_gvt+ crime+ gouv_contr+coopGvt+risk_fin+interaction1,data = data, family=binomial(logit))
+summary(model)
+summ(model)
+```
+
+```{r,echo=FALSE,include=FALSE}
+# SOUDAN AVEC INNOV PENETRE
+model = glm(innov1 ~ intRD+extRD+ext_fin+nonfin_gvt+ crime+ gouv_contr+coopGvt+risk_fin+interaction1,data = bdd1, family=binomial(logit))
+summary(model)
+summ(model)
+```
+
+```{r,echo=FALSE,include=FALSE}
+# SOUDAN DU SUD AVEC INNOV PENETRE
+model = glm(innov1 ~ intRD+extRD+ext_fin+nonfin_gvt+ crime+ gouv_contr+coopGvt+risk_fin+interaction1,data = bdd2, family=binomial(logit))
+summary(model)
+summ(model)
+```
+
+The three regression models -- 'Base Model', 'Sudan', and 'South of Sudan' -- help us understand if our base model remains valid in different subsets of data, thereby strengthening the credibility of our results.
+
+
+|                   | Base Model                | Sudan                   | South of Sudan           |
+|-------------------|---------------------------|-------------------------|--------------------------|
+| Intercept         | -2.47 *** (0.23)          | -2.89 *** (0.42)        | -2.42 *** (0.24)         |
+| Sudan             | -0.03  (0.27)             |                         |                          |
+| intRD             | 1.05 *** (0.34)           | 2.53 ** (0.94)          | 0.91 ** (0.37)           |
+| extRD             | 0.50  (0.51)              | 1.70  (1.50)            | 0.38  (0.58)             |
+| ext_fin           | 1.19 *** (0.36)           | -0.02  (2.00)           | 1.24 *** (0.37)          |
+| nonfin_gvt        | 1.03 * (0.53)             | -0.38  (1.80)           | 1.21 * (0.58)            |
+| crime1            | -0.25  (0.29)             | -2.43 ** (1.09)         | -0.01  (0.31)            |
+| gouv_contr1       | 0.39  (0.29)              | -0.19  (0.59)           | 0.45  (0.35)             |
+| coopGvt           | 0.63  (0.47)              | 2.60 ** (1.20)          | 0.45  (0.54)             |
+| risk_fin          | 0.52 * (0.25)             | 1.47 ** (0.54)          | 0.35  (0.30)             |
+| interaction1      | -2.25 ** (1.02)           | -4.01  (2.23)           | -2.06  (1.24)            |
+| N                 | 636                       | 199                     | 437                      |
+| Obs missing       | 764                       | 463                     | 301                      |
+| Pseudo-RÂ² (Cragg-Uhler) | 0.16               | 0.27                    | 0.15                     |
+| Pseudo-RÂ² (McFadden) | 0.11                   | 0.20                    | 0.11                     |
+| AIC               | 500.63                    | 143.17                  | 363.33                   |
+| BIC               | 549.64                    | 176.11                  | 404.13                   |
+Standard errors in parentheses, * p < 0.05, ** p < 0.01, *** p < 0.001. 
+
+
+
+**Comparison betwen the firs model and base model** : 
+
+By focusing on a narrower definition of innovation, we found that Sudan seems to be less innovative compared to South Sudan. It's clear that in South Sudan, many more companies are investing in both improving products and processes at the same time compared to Sudan. 
+
+Just like in our first basic model, working with the government and securing contracts with them have a positive effect on encouraging innovation when we narrow down our focus. Since both of these factors are related to money, it suggests that any financial support from the government helps businesses innovate. However, when it comes to innovation needing only one kind (either process or product innovation), support from the government that isn't about money also has a positive impact. This could be because the government's involvement, beyond money, involves sharing knowledge, offering guidance, and making important connections that can affect how companies innovate. Yet, our latest findings show that having both types of government involvement together ends up hurting companies, even though each type individually is beneficial. So, it would be better if the government chose one approach instead of pursuing both at the same time. Other than this point, our overall conclusions are pretty much the same as from the first model.
+
+
+
+**Comparison between the two countries - Sudan vs. South Sudan:**
+
+  In the case of the variables of interest, attempting or obtaining government contracts translates into integrated innovation for companies in South Sudan, unlike in Sudan. However, the positive sign in Sudan for â€˜coopGvtâ€™ suggests that cooperation with the government is a factor that promotes innovation, implying that companies collaborating with the government are likely to be more innovative. According to economic theories, having financial and/or non-financial support seems to positively increase the propensity to innovate. In our study, we only take into account non-financial support from the state (â€˜nonfin_gvtâ€™), which has a divergent impact between the two countries. In South Sudan, non-financial support from the state seems to promote innovation (positive coefficient), whereas in Sudan, the negative sign might indicate that companies do not perceive non-financial aid from the government as a lever for innovation, or that other forms of support might be necessary. Indeed, the variable "interaction1," resulting from the combination of cooperation with the state and non-financial support, shows a negative effect in both countries, suggesting that it did not have the beneficial effect expected on innovation in these specific countries. This situation could result from possible inefficiency or inconsistencies in the implementation of public policies aiming to support innovation during the period 2013-2014.
+On the other hand, our study focuses on a sub-hypothesis aiming to examine whether the presence of crime influenced the propensity to innovate. In our analysis, crime seems to hinder innovation, perhaps due to a business climate perceived as less safe, which could deter investments in new initiatives in both countries because of the negative effect of the variable "crime1". Therefore, security-related expenses (indicated by the variable "risk_fin" with a positive effect in both countries) might suggest that companies investing in security are perhaps better positioned to innovate. This could be due to the protection of their assets against risks, which would facilitate the adoption of new technologies or new practices.
+
+
+  As for the control variables, the variables "intRD" (investment in internal research and development) and "extRD" (investment in external research and development) show positive coefficients in both countries. This suggests that companies investing in research and development are more inclined to realize integrated innovations. This observation may reflect a strong relationship between innovation capacity and R&D investments, which is consistent with the economic literature that often emphasizes the importance of R&D in the innovation process. Moreover, it also indicates that Sudanese companies benefit from external collaborations to enrich their innovation potential. Additionally, in South Sudan, companies seem to benefit from external investments to stimulate innovation, as suggested by the positive coefficient of the variable "ext_fin" (external financial investment). However, in Sudan, the coefficient is negative, which could indicate that external investments do not play a key role in the innovation process in this country, or that there are other unobserved variables that could influence this relationship.
+
+**Comparison with the Base Model:**
+
+In the base model, which combines data from both countries, we see that the general trends are similar to those observed in the models specific to each country. Internal and external R&D (intRD, extRD), cooperation with the state (coopGvt), and security expenditures (risk_fin) are generally associated with a greater likelihood of integrated innovation. However, non-financial government support (nonfin_gvt) and attempts at establishing government contracts (gouv_contr1) show differences between the models for Sudan and the combined model. These differences suggest that the national context can influence the effectiveness of non-financial government support and the impact of attempts to contract with the government on innovation.
+
+
+  Therefore, by considering only the sign of the coefficients, these observations support the idea that internal R&D and non-financial government aid are potentially important factors for integrated innovation, while the effect of crime and governmental cooperation may vary significantly depending on the national context. This highlights the need for a differentiated approach to innovation policy for each country. It should be noted that as the number of observations in the Sudan model is low, the coefficient estimates may be unstable and unreliable.
+
+
+# Discussion et conclusion
+
+Limiting the scope of innovation revealed notable differences between Sudan and South Sudan, highlighting a greater inclination towards comprehensive innovation in the latter. The positive influence of cooperation with the government and government contracts on innovation, especially when considered separately, suggests that both financial and non-financial support from the government can boost companies' innovation efforts. However, an interesting aspect from this series of robustness tests remains the need for a more specific approach or choice by the government due to the negative impact that excessive involvement might have.
+
+Comparing Sudan and South Sudan revealed significant disparities in how cooperation with the government and non-financial support affect innovation. These differences indicate that the national context plays a crucial role in how these factors affect innovation. Additionally, highlighting the negative impact of crime on innovation suggests that business environments perceived as less secure might discourage investments in new initiatives in both countries.
+
+Furthermore, the effects of certain variables differ between the two countries. This once again emphasizes the impact of the national context on the outcomes.
+
+These are some limits of our study : 
+
+- Limited observations for Sudan may restrict the generalizability of the conclusions.
+- Choosing only two types of innovation may not capture the entirety of innovation in the selected countries.
+- The GLM model with logit may not capture more complex or non-linear relationships in the data.
+
+
+In summary, our findings underscore the importance of the specific institutional and economic environment of each country in the innovation process of businesses. These observations emphasize the necessity for a differentiated approach for each national context regarding innovation policies. It is worth noting that due to the limited number of observations for the Sudan model, some coefficient estimates might be unstable and would require additional validation to enhance their reliability.
+
+
+
+# RÃ©fÃ©rences bibliographiques
+
+- DARMON E. (2021) *Cahier des charges du projet d'Economie de l'Innovation 2021-2022*, Com-Presses Universitaires de Nanterre
+- M r ASMANI Arezki, UMMTO. M r AMDAOUD Mounir ( 2019), *Les dÃ©terminants de lâ€™innovation dans les pays du Maghreb : illustration Ã  travers le cas de lâ€™AlgÃ©rie* ,CPEN, Paris 13.
+- Christian Le Bas1 , Laurence Nkakene Molou, (2020),*The drivers of innovation in an African middle-income economy, a reassessment of innovation models*, Esdes UCLY France - Centre dâ€™Etudes et de Recherche en Economie et Gestion (CEREG), UniversitÃ© de YaoundÃ© II, Cameroun
+  
